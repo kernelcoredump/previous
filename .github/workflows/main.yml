@@ -1,6 +1,7 @@
 on:
   push:
     branches:
+    - feature/*
     - master
 
 jobs:
@@ -20,3 +21,19 @@ jobs:
     - name: Use GitVersion
       uses: gittools/actions/gitversion/execute@v0.9.4
       id:   gitversion
+
+    - name: Build
+      uses: docker://ghcr.io/kernelcoredump/previous-builder:latest
+      with:
+        # mount $GITHUB_WORKSPACE to /work or just use the mounted /github/workspace
+        # workdir is automatically set to /github/workspace
+        args: "/crosstools-build.sh"
+
+    - name: Create package
+      run: tar -cf previous-RPiOS.tar -C $GITHUB_WORKSPACE/build/dist .
+
+    - name: Publish package
+      uses: actions/upload-artifact@v2
+      with:
+        name: previous-RPiOS
+        path: previous-RPiOS.tar

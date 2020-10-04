@@ -1,0 +1,34 @@
+commit-date-format: 'yyyyMMdd-HHmss'
+update-build-number: false
+
+branches:
+  master:
+    mode: ContinuousDeployment
+    tag: ci
+    increment: Minor
+    is-release-branch: false
+    tracks-release-branches: true
+    track-merge-target: true
+    prevent-increment-of-merged-branch-version: false
+  support:
+    mode: ContinuousDeployment
+    tag: ci
+    increment: Minor
+    is-release-branch: false
+    tracks-release-branches: true
+    track-merge-target: true
+    prevent-increment-of-merged-branch-version: false
+  release:
+    mode: ContinuousDeployment
+    tag: rc
+    increment: Patch
+    is-release-branch: true
+  feature:
+    mode: ContinuousDeployment
+    tag: feature-{BranchName}
+  pull-request:
+    mode: ContinuousDeployment
+    tag: pr-{BranchName}
+
+ignore:
+  sha: []
