@@ -12,6 +12,8 @@ include(CheckFunctionExists)
 include(CheckCCompilerFlag)
 include(DistClean)
 
+include_directories(AFTER SYSTEM /usr/include/$ENV{CROSS_TRIPLE} /usr/include/.)
+
 # Set build type to "Release" if user did not specify any build type yet
 # Other possible values: Debug, Release, RelWithDebInfo and MinSizeRel
 if(NOT CMAKE_BUILD_TYPE)

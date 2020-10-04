@@ -80,6 +80,9 @@ elseif(WIN32)
 # Other targets, use default sources
 else()
 	add_executable(Previous ${SOURCES})
+	set_target_properties(Previous PROPERTIES
+		LINK_FLAGS "-L/usr/lib/$ENV{CROSS_TRIPLE} -Wl,-rpath-link,/usr/lib/$ENV{CROSS_TRIPLE} -Wl,-rpath-link,/usr/lib/$ENV{CROSS_TRIPLE}/pulseaudio -Wl,-rpath-link,/lib/$ENV{CROSS_TRIPLE}"
+	)
 endif(ENABLE_OSX_BUNDLE)
 
 target_link_libraries(Previous Debug GuiSdl UaeCpu DSP Dimension Slirp SoftFloat ${SDL2_LIBRARY})

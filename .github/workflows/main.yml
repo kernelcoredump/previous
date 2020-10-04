@@ -1,0 +1,22 @@
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  build:
+    name: Build RaspberryPi application
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+      with:
+        # check performance of increases in the commit depth
+        fetch-depth: 0
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.4
+      with:
+        versionSpec: 5.3.x
+    - name: Use GitVersion
+      uses: gittools/actions/gitversion/execute@v0.9.4
+      id:   gitversion

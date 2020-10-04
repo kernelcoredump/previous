@@ -32,6 +32,7 @@ find_path(PCAP_INCLUDE_DIR
 find_library(PCAP_LIBRARY
     NAMES pcap wpcap
     HINTS ${PCAP_ROOT_DIR}/lib ${PCAP_ROOT_DIR}/Lib
+    PATHS /usr/lib/$ENV{CROSS_TRIPLE}
 )
 
 include(FindPackageHandleStandardArgs)
