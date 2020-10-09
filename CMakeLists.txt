@@ -149,6 +149,10 @@ if(NOT BINDIR)
 	set(BINDIR bin)
 endif()
 
+if(NOT ICONSDIR)
+	set(ICONSDIR share/icons)
+endif()
+
 if(NOT DATADIR)
 	set(DATADIR share/previous)
 endif()
