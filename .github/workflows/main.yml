@@ -29,7 +29,7 @@ jobs:
       with:
         # mount $GITHUB_WORKSPACE to /work or just use the mounted /github/workspace
         # workdir is automatically set to /github/workspace
-        args: "./crosstools-build.sh"
+        args: "/crosstools-build.sh"
 
     #- name: Set AppImage version
     #  run:  echo "APP_VERSION=latest" >> $GITHUB_ENV
