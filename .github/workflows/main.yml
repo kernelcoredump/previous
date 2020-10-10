@@ -32,7 +32,7 @@ jobs:
         args: "/crosstools-build.sh"
 
     - name: Build AppImage
-      uses: docker://appimagecrafters/appimage-builder
+      uses: docker://appimagecrafters/appimage-builder:latest
       id:   appimage
       env:
         APP_VERSION: ${{ steps.gitversion.outputs.SemVer }}
@@ -51,7 +51,7 @@ jobs:
     - name: Publish AppImage
       uses: actions/upload-artifact@v2
       with:
-        #name: AppImage
+        name: AppImage
         path: ${{ steps.appimage.outputs.appimage_file }}
 
     - name: Create Release
@@ -60,10 +60,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ steps.gitversion.outputs.SemVer }}
-        release_name: ${{ steps.gitversion.outputs.SemVer }}
-        draft: true # change
-        prerelease: true # depends on branch
+        tag_name:     v${{ steps.gitversion.outputs.SemVer }}
+        release_name: Release ${{ steps.gitversion.outputs.SemVer }}
+        prerelease:   true
+        draft:        true
 
     - name: Upload Release Asset
       uses: actions/upload-release-asset@v1
@@ -72,5 +72,5 @@ jobs:
       with:
         upload_url: ${{ steps.create-release.outputs.upload_url }}
         asset_path: ${{ steps.appimage.outputs.appimage_file }}
-        #asset_name: ${{ steps.appimage.outputs.appimage_file }}
+        asset_name: ${{ steps.appimage.outputs.appimage_file }}
         asset_content_type: application/octet-stream
