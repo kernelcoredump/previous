@@ -1,3 +1,5 @@
+# TODO: https://github.com/GitTools/GitVersion/issues/2421
+
 on:
   push:
     branches:
@@ -27,7 +29,18 @@ jobs:
       with:
         # mount $GITHUB_WORKSPACE to /work or just use the mounted /github/workspace
         # workdir is automatically set to /github/workspace
-        args: "/crosstools-build.sh"
+        args: "./crosstools-build.sh"
+
+    #- name: Set AppImage version
+    #  run:  echo "APP_VERSION=latest" >> $GITHUB_ENV
+    #
+    - name: Build AppImage
+      id:   appimage
+      uses: AppImageCrafters/build-appimage-action@master
+      with:
+        recipe: "./AppImageBuilder.yml"
+      env:
+        APP_VERSION: ${{ steps.gitversion.outputs.SemVer }}
 
     - name: Create package
       run: tar -cf previous-RPiOS.tar -C $GITHUB_WORKSPACE/build/dist .
@@ -37,3 +50,30 @@ jobs:
       with:
         name: previous-RPiOS
         path: previous-RPiOS.tar
+
+    - name: Publish AppImage
+      uses: actions/upload-artifact@v2
+      with:
+        #name: AppImage
+        path: ${{ steps.appimage.outputs.appimage_file }}
+
+    - name: Create Release
+      id:   create-release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ steps.gitversion.outputs.SemVer }}
+        release_name: ${{ steps.gitversion.outputs.SemVer }}
+        draft: true # change
+        prerelease: true # depends on branch
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        asset_path: ${{ steps.appimage.outputs.appimage_file }}
+        #asset_name: ${{ steps.appimage.outputs.appimage_file }}
+        asset_content_type: application/octet-stream

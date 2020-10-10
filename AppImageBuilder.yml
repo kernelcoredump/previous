@@ -1,0 +1,27 @@
+version: 1
+
+AppDir:
+  path: build/dist
+  app_info:
+    id:      org.nextcomputers.previous
+    name:    PreviousEmulator
+    version: !ENV ${APP_VERSION}
+    icon: Previous
+    exec: usr/bin/Previous
+    exec_args: $@
+  apt:
+    arch: armhf
+    sources:
+    - sourceline: 'deb [arch=armhf] http://cdn-fastly.deb.debian.org/debian buster main'
+      key_url:    'https://ftp-master.debian.org/keys/release-10.asc'
+    include:
+    - libpcap0.8
+  runtime:
+    env:
+      APPDIR_LIBRARY_PATH: $APPDIR/usr/lib/arm-linux-gnueabihf:$APPDIR/lib/arm-linux-gnueabihf
+      LIBC_LIBRARY_PATH: $APPDIR/opt/libc/usr/lib/arm-linux-gnueabihf:$APPDIR/opt/libc/lib/arm-linux-gnueabihf
+
+AppImage:
+  update-information: None
+  sign-key: None
+  arch: armhf

@@ -4,7 +4,7 @@ update-build-number: false
 branches:
   master:
     mode: ContinuousDeployment
-    tag: ci
+    tag: beta
     increment: Minor
     is-release-branch: false
     tracks-release-branches: true
@@ -12,7 +12,7 @@ branches:
     prevent-increment-of-merged-branch-version: false
   support:
     mode: ContinuousDeployment
-    tag: ci
+    tag: beta
     increment: Minor
     is-release-branch: false
     tracks-release-branches: true
