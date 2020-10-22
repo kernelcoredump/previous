@@ -10,7 +10,13 @@ const char ZIP_fileid[] = "Hatari zip.c : " __DATE__ " " __TIME__;
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifdef _WIN32
+#define strncasecmp _strnicmp
+#define strcasecmp _stricmp
+#else
 #include <unistd.h>
+#endif
 #include <dirent.h>
 #include <sys/types.h>
 #include <zlib.h>

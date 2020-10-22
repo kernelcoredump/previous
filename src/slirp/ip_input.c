@@ -43,10 +43,13 @@
 #include <stdbool.h>
 #include <sys/types.h>
 
+#ifdef _WIN32
+#define container_of CONTAINING_RECORD
+#else
 #define container_of(ptr, type, member) ({                      \
         typeof(((type *) 0)->member) *__mptr = (ptr);     \
         (type *) ((char *) __mptr - offsetof(type, member));})
-
+#endif
 
 #include <slirp.h>
 #include "ip_icmp.h"

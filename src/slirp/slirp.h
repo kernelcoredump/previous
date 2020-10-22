@@ -128,11 +128,7 @@ typedef u_int32_t uint32;
 # endif
 #endif
 
-#ifdef HAVE_STRING_H
-# include <string.h>
-#else
-# include <strings.h>
-#endif
+#include <string.h>
 
 #ifndef _WIN32
 #include <sys/uio.h>

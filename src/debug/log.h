@@ -132,7 +132,10 @@ extern Uint64 LogTraceFlags;
 
 #if ENABLE_TRACING
 
-#ifndef _VCWIN_
+#ifdef _WIN32
+#define	LOG_TRACE(level, ...) \
+	if (unlikely(LogTraceFlags & level)) fprintf(TraceFile, __VA_ARGS__)
+#else
 #define	LOG_TRACE(level, args...) \
 	if (unlikely(LogTraceFlags & level)) fprintf(TraceFile, args)
 #endif
@@ -140,7 +143,7 @@ extern Uint64 LogTraceFlags;
 
 #else		/* ENABLE_TRACING */
 
-#ifndef _VCWIN_
+#ifndef _WIN32
 #define LOG_TRACE(level, args...)	{}
 #endif
 #define LOG_TRACE_LEVEL( level )	(0)
@@ -151,7 +154,7 @@ extern Uint64 LogTraceFlags;
  * In code it's used in such a way that it will be optimized away when tracing
  * is disabled.
  */
-#ifndef _VCWIN_
+#ifndef _WIN32
 #define LOG_TRACE_PRINT(args...)	fprintf(TraceFile , args)
 #endif
 

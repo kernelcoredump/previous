@@ -33,6 +33,10 @@ const char Unzip_fileid[] = "Hatari unzip.c : " __DATE__ " " __TIME__;
 #   include <errno.h>
 #endif
 
+#ifdef _WIN32
+#define strncasecmp _strnicmp
+#define strcasecmp _stricmp
+#endif
 
 #ifndef local
 #  define local static
