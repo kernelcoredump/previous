@@ -22,7 +22,7 @@ void i860_cpu_device::debugger() {
     debugger(0, "");
 }
 
-extern volatile int mainPauseEmulation;
+extern "C" volatile int mainPauseEmulation;
 
 void i860_cpu_device::debugger(char cmd, const char* format, ...) {
     if(!(isatty(fileno(stdin)))) return;
@@ -72,7 +72,7 @@ void i860_cpu_device::debugger(char cmd, const char* format, ...) {
             fprintf (stderr, ">");
             for(;;) {
                 char it = 0;
-                if (read(STDIN_FILENO, &it, 1) == 1) {
+                if (read(0, &it, 1) == 1) {
                     if (it == '\n') {
                         buf[c] = 0;
                         c = 0;

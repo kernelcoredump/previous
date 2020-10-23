@@ -529,7 +529,7 @@ bool NextDimension::dbg_cmd(const char* buf) {
             size        += ConfigureParams.Dimension.board[ND_NUM(slot)].nMemoryBankSize[1];
             size        += ConfigureParams.Dimension.board[ND_NUM(slot)].nMemoryBankSize[2];
             size        += ConfigureParams.Dimension.board[ND_NUM(slot)].nMemoryBankSize[3];
-            fprintf(stderr, "Writing %"FMT_zu"MB to '%s'...", size, nd_dump_path);
+            fprintf(stderr, "Writing %" FMT_zu "MB to '%s'...", size, nd_dump_path);
             size <<= 20;
             fwrite(ram, sizeof(Uint8), size, fp);
             fclose(fp);
