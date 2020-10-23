@@ -7,7 +7,7 @@
 
 #include <stdio.h>
 #include <ctype.h>
-#include <strings.h>
+#include <string.h>
 #include <stdlib.h>
 
 #include "config.h"
@@ -20,6 +20,11 @@
 
 #define ADDRESS_ON_PC		1
 #define USE_SYMBOLS			1
+
+#ifndef PATH_MAX
+// This may be better than #include <windows.h>
+#define PATH_MAX 250
+#endif
 
 typedef enum {
 	doptNoBrackets = 1,		// hide brackets around absolute addressing
@@ -1682,7 +1687,7 @@ static const OpcodeTableStruct	OpcodeTable[] = {
 	{ MC68040|MC68060|MC_FPU, {0xffc0, 0xf100|(FPU_COPROC_ID<<9)}, {0}, {ofEa}, "FSAVE", {EA_Dn|EA_An|EA_piAn|EA_Immed} },
 	{ MC68040|MC68060|MC_FPU, {0xffc0, 0xf140|(FPU_COPROC_ID<<9)}, {0}, {ofEa}, "FRESTORE", {EA_Dn|EA_An|EA_piAn|EA_Immed} },
 
-	{ }
+	{ 0 }
 };
 
 static int	Disass68k(long addr, char *labelBuffer, char *opcodeBuffer, char *operandBuffer, char *commentBuffer)
@@ -1850,7 +1855,7 @@ more:
 			continue;
 
 		// search for the opcode plus up to 2 extension words
-		unsigned short	opcode[5] = {};
+		unsigned short	opcode[5] = { 0 };
 		unsigned int	i;
 		for(i=0; i<5; ++i)
 		{
