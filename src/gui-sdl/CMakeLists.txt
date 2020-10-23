@@ -1,8 +1,6 @@
 
 include_directories(. ../.. ../debug ../includes ${SDL2_INCLUDE_DIR} ${PCAP_INCLUDE_DIR}) 
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-write-strings")
-
 add_library(GuiSdl
     dlgAbout.c dlgAdvanced.c dlgAlert.c dlgBoot.c dlgDimension.c
     dlgDiskSelect.c dlgEthernet.c dlgEthernetAdvanced.c dlgFileSelect.c

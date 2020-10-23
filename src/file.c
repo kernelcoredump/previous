@@ -10,9 +10,15 @@ const char File_fileid[] = "Hatari file.c : " __DATE__ " " __TIME__;
 
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <sys/time.h>
 #include <fcntl.h>
+
+#ifdef _WIN32
+#define strncasecmp _strnicmp
+#define strcasecmp _stricmp
+#else
 #include <unistd.h>
+#endif
+
 #include <assert.h>
 #include <errno.h>
 #include <zlib.h>
