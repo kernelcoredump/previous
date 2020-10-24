@@ -14,6 +14,9 @@
     Changes for previous/NeXTdimension by Simon Schubiger (SC)
  
 ***************************************************************************/
+#ifdef _WIN32
+#include <io.h>
+#endif
 
 int i860_disassembler(UINT32 pc, UINT32 insn, char* buffer);
 
