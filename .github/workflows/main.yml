@@ -37,7 +37,7 @@ jobs:
       env:
         APP_VERSION: ${{ steps.gitversion.outputs.SemVer }}
       with:
-        args: /bin/bash -c "appimage-builder --recipe ./AppImageBuilder.yml --skip-test && echo ::set-output name=appimage_file::$(ls *.AppImage)"
+        args: /bin/bash -c "appimage-builder --recipe ./AppImageBuilder.armhf.yml --skip-test && echo ::set-output name=appimage_file::$(ls *.AppImage)"
 
     - name: Create package
       run: tar -cf previous-RPiOS.tar -C $GITHUB_WORKSPACE/build/dist .

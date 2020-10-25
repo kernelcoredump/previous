@@ -20,6 +20,10 @@ if(WIN32)
 	set(GUIWIN_SOURCES gui-win/opencon.c)
     set(GUIWIN_RES gui-win/previous-winicon.rc)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
+
+	find_path(DIRENT_INCLUDE_DIRS "dirent.h")
+	include_directories(${DIRENT_INCLUDE_DIRS})
+
 endif(WIN32)
 
 include_directories(${CMAKE_BINARY_DIR} includes debug softfloat cpu
