@@ -1,5 +1,3 @@
-# TODO: https://github.com/GitTools/GitVersion/issues/2421
-
 on:
   push:
     branches:
@@ -22,6 +20,7 @@ jobs:
       uses: gittools/actions/gitversion/setup@v0.9.4
       with:
         versionSpec: 5.3.x
+    # TODO: https://github.com/GitTools/GitVersion/issues/2421
     - name: Use GitVersion
       uses: gittools/actions/gitversion/execute@v0.9.4
       id:   gitversion
@@ -127,7 +126,7 @@ jobs:
     - name: Create package
       run: |
         cmake --install ${{ runner.workspace }}/build --prefix ${{ runner.workspace }}/build/dist
-        7z a PreviousEmulator-${{ needs.setVersion.outputs.SemVer }}.x64-windows.zip ${{ runner.workspace }}/build/dist/
+        7z a PreviousEmulator-${{ needs.setVersion.outputs.SemVer }}.x64-windows.zip ${{ runner.workspace }}/build/dist/*
 
     - name: Publish package
       uses: actions/upload-artifact@v2
