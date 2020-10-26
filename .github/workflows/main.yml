@@ -121,6 +121,9 @@ jobs:
         buildWithCMake: true
         buildWithCMakeArgs: '--config Release'
 
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v1.0.2
+
     - name: Create package
       run: |
         cmake --install ${{ runner.workspace }}/build --prefix ${{ runner.workspace }}/build/dist
