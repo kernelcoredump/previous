@@ -93,12 +93,17 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v2
 
+    - name: Locate package list
+      id: package-list
+      run: |
+        echo "::set-output name=PackagesFile::${{ github.workspace }}/vcpkg-packages.x64-windows.txt"
+
     - name: Run vcpkg
       uses: lukka/run-vcpkg@v4
       with:
         vcpkgGitCommitId: 50a596c40a07afc7588f12f86f276581a60cba94
-        vcpkgArguments: '@vcpkg-packages.x64-windows.txt'
-        appendedCacheKey: ${{ hashFiles('vcpkg-packages.x64-windows.txt') }}
+        vcpkgArguments: '@${{ github.workspace }}/vcpkg-packages.x64-windows.txt'
+        appendedCacheKey: ${{ hashFiles('${{ github.workspace }}/vcpkg-packages.x64-windows.txt') }}
 
     #- run: |
     #    $VCPKG_ROOT/vcpkg install @vcpkg-packages.x64-windows.txt
