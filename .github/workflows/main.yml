@@ -127,7 +127,7 @@ jobs:
     - name: Create package
       run: |
         cmake --install ${{ runner.workspace }}/build --prefix ${{ runner.workspace }}/build/dist
-        7z -a PreviousEmulator-${{ needs.setVersion.outputs.SemVer }}.x64-windows.zip ${{ runner.workspace }}/build/dist/
+        7z a PreviousEmulator-${{ needs.setVersion.outputs.SemVer }}.x64-windows.zip ${{ runner.workspace }}/build/dist/
 
     - name: Publish package
       uses: actions/upload-artifact@v2
