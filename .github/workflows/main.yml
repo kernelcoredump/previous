@@ -97,7 +97,7 @@ jobs:
       uses: lukka/run-vcpkg@v4
       with:
         vcpkgArguments: '@vcpkg-packages.x64-windows.txt'
-        appendedCacheKey: ${{ hashFiles(vcpkg-packages.x64-windows.txt) }}
+        appendedCacheKey: ${{ hashFiles('vcpkg-packages.x64-windows.txt') }}
 
     #- run: |
     #    $VCPKG_ROOT/vcpkg install @vcpkg-packages.x64-windows.txt
