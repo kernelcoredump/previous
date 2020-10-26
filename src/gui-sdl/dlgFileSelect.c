@@ -10,7 +10,9 @@ const char DlgFileSelect_fileid[] = "Hatari dlgFileSelect.c : " __DATE__ " " __T
 
 #include <SDL.h>
 #include <sys/stat.h>
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 
 #include "main.h"
 #include "scandir.h"

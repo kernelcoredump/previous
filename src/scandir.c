@@ -14,7 +14,9 @@ const char ScanDir_fileid[] = "Hatari scandir.c : " __DATE__ " " __TIME__;
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 
 #include "scandir.h"
 #include "log.h"
@@ -154,6 +156,7 @@ error_out:
  *-----------------------------------------------------------------------*/
 #if defined(WIN32) || defined(__CEGCC__)
 
+#ifndef _WIN32
 #include <windows.h>
 #include <wchar.h>
 
@@ -299,5 +302,6 @@ int scandir(const char *dirname, struct dirent ***namelist, int (*sdfilter)(stru
 	*namelist = dir;
 	return nDir;
 }
+#endif
 
 #endif /* WIN32 */

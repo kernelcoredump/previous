@@ -58,12 +58,17 @@ const char CfgOpts_fileid[] = "Hatari cfgopts.c : " __DATE__ " " __TIME__;
 
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifdef _WIN32
+#define strncasecmp _strnicmp
+#define strcasecmp _stricmp
+#else
 #include <unistd.h>
+#endif
 
 #include "main.h"
 #include "cfgopts.h"
 #include "str.h"
-
 
 /**
  * ---------------------------------------------------------------------/

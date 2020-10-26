@@ -18,8 +18,9 @@
 #include <stdlib.h>
 #if defined _WIN32
 #undef mkdir
-#endif
+#else
 #include <unistd.h>
+#endif
 
 #include "i860.hpp"
 #include "dimension.hpp"

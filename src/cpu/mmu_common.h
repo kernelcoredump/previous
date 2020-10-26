@@ -23,6 +23,18 @@ struct m68k_exception {
 #else
 /* we are in plain C, just use a stack of long jumps */
 #include <setjmp.h>
+#ifdef _WIN32
+/* QEMU uses sigsetjmp()/siglongjmp() as the portable way to specify
+ * "longjmp and don't touch the signal masks". Since we know that the
+ * savemask parameter will always be zero we can safely define these
+ * in terms of setjmp/longjmp on Win32.
+ */
+#define sigjmp_buf jmp_buf
+#define sigsetjmp(env, savemask) setjmp(env)
+#define siglongjmp(env, val) longjmp(env, val)
+#define sigemptyset(x) (void)0
+#endif
+
 extern sigjmp_buf __exbuf;
 extern int     __exvalue;
 #define TRY(DUMMY)       __exvalue=sigsetjmp(__exbuf, 0);       \

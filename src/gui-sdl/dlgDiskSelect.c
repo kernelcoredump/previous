@@ -10,7 +10,9 @@ const char DlgDiskSelect_fileid[] = "Previous dlgDiskSelect.c : " __DATE__ " " _
 
 #include <SDL.h>
 #include <sys/stat.h>
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 
 #include "main.h"
 #include "scandir.h"

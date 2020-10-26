@@ -485,7 +485,7 @@ static void Main_LoadInitialConfig(void) {
 #if defined(__AMIGAOS4__)
 		strncpy(psGlobalConfig, CONFDIR"previous.cfg", FILENAME_MAX);
 #else
-		snprintf(psGlobalConfig, FILENAME_MAX, CONFDIR"%cprevious.cfg", PATHSEP);
+		snprintf(psGlobalConfig, FILENAME_MAX, CONFDIR "%cprevious.cfg", PATHSEP);
 #endif
 		/* Try to load the global configuration file */
 		Configuration_Load(psGlobalConfig);

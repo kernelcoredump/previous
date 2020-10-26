@@ -51,9 +51,8 @@ if(NOT SDL2_FOUND)
 	message(FATAL_ERROR "SDL2 library not found!")
 endif(NOT SDL2_FOUND)
 
-find_package(Math)
-
-find_package(Readline)
+find_package(MATH)
+find_package(READLINE)
 if(READLINE_FOUND)
 	set(CMAKE_REQUIRED_LIBRARIES "readline")
 	check_function_exists(rl_filename_completion_function HAVE_RL_COMPLETION_FUNCTION)

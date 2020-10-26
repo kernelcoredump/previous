@@ -28,6 +28,10 @@ const char Log_fileid[] = "Hatari log.c : " __DATE__ " " __TIME__;
 #include "screen.h"
 #include "file.h"
 
+#ifdef _WIN32
+#define strncasecmp _strnicmp
+#define strcasecmp _stricmp
+#endif
 
 static struct {
 	Uint64 Level;

@@ -20,6 +20,10 @@ if(WIN32)
 	set(GUIWIN_SOURCES gui-win/opencon.c)
     set(GUIWIN_RES gui-win/previous-winicon.rc)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -mwindows")
+
+	find_path(DIRENT_INCLUDE_DIRS "dirent.h")
+	include_directories(${DIRENT_INCLUDE_DIRS})
+
 endif(WIN32)
 
 include_directories(${CMAKE_BINARY_DIR} includes debug softfloat cpu
@@ -130,4 +134,10 @@ else()
 	install(FILES Rev_1.0_v41.BIN DESTINATION ${BINDIR})
 	install(FILES Rev_2.5_v66.BIN DESTINATION ${BINDIR})
 	install(FILES Rev_3.3_v74.BIN DESTINATION ${BINDIR})
+
+	if(WIN32 AND VCPKG_TOOLCHAIN)
+		# This is experimental: https://github.com/Microsoft/vcpkg/issues/1653
+		x_vcpkg_install_local_dependencies(TARGETS Previous DESTINATION ${BINDIR})
+	endif(WIN32 AND VCPKG_TOOLCHAIN)
+
 endif(ENABLE_OSX_BUNDLE)

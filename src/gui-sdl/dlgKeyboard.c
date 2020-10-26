@@ -6,7 +6,9 @@
 */
 const char DlgKeyboard_fileid[] = "Previous dlgKeyboard.c : " __DATE__ " " __TIME__;
 
+#ifndef _WIN32
 #include <unistd.h>
+#endif
 
 #include "main.h"
 #include "configuration.h"

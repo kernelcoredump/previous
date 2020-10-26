@@ -22,10 +22,17 @@
 #define do_get_mem_long(a) (*((uae_u32*)a))
 #define do_put_mem_long(a, v) (*((uae_u32*)a)) = v
 #else
+#ifdef _WIN32
+#define do_get_mem_word(a) _byteswap_ushort(*((uae_u16 *)(a)))
+#define do_put_mem_word(a, v) *((uae_u16 *)(a)) = _byteswap_ushort(v) 
+#define do_get_mem_long(a) _byteswap_ulong(*((uae_u32 *)(a)))
+#define do_put_mem_long(a, v) *((uae_u32 *)(a)) = _byteswap_ulong(v)
+#else
 #define do_get_mem_word(a) __builtin_bswap16(*((uae_u16 *)(a)))
 #define do_put_mem_word(a, v) *((uae_u16 *)(a)) = __builtin_bswap16(v) 
 #define do_get_mem_long(a) __builtin_bswap32(*((uae_u32 *)(a)))
 #define do_put_mem_long(a, v) *((uae_u32 *)(a)) = __builtin_bswap32(v)
+#endif
 #endif
 
 #define do_get_mem_byte(a) (*((uae_u8*)a))

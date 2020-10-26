@@ -283,6 +283,8 @@ void to_upper (TCHAR *s, int len);
 #endif
 
 #if defined _WIN32
+#define strncasecmp _strnicmp
+#define strcasecmp _stricmp
 
 #if defined __WATCOMC__
 
@@ -297,7 +299,8 @@ void to_upper (TCHAR *s, int len);
 #define O_NDELAY 0
 #define mkdir(a,b) mkdir(a)
 
-#elif defined _MSC_VER
+#elif defined _MSC_VER && 0
+// The posixemu_ functions are not available so these are disabled with "&& 0".
 
 #ifdef HAVE_GETTIMEOFDAY
 #include <winsock.h> // for 'struct timeval' definition
