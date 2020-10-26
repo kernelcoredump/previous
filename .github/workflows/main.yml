@@ -96,7 +96,7 @@ jobs:
     - name: Run vcpkg
       uses: lukka/run-vcpkg@v4
       with:
-        vcpkgGitCommitId: 8483079660f0ee1051f372d11e17900b031cdf60
+        vcpkgGitCommitId: 50a596c40a07afc7588f12f86f276581a60cba94
         vcpkgArguments: '@vcpkg-packages.x64-windows.txt'
         appendedCacheKey: ${{ hashFiles('vcpkg-packages.x64-windows.txt') }}
 
