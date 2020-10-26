@@ -29,6 +29,8 @@ jobs:
     name: Build RaspberryPi application
     needs: setVersion
     runs-on: 'ubuntu-latest'
+    env:
+      SEMVER: ${{ needs.setVersion.outputs.SemVer }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -44,10 +46,15 @@ jobs:
       uses: docker://appimagecrafters/appimage-builder:latest
       id:   appimage
       env:
-        APP_VERSION: ${{ needs.setVersion.outputs.SemVer }}
+        APP_VERSION: ${{ env.SEMVER }}
       with:
         args: /bin/bash -c "appimage-builder --recipe ./AppImageBuilder.armhf.yml --skip-test && echo ::set-output name=appimage_file::$(ls *.AppImage)"
 
+    - name: Publish AppImage
+      uses: actions/upload-artifact@v2
+      with:
+        name: packages
+        path: ${{ steps.appimage.outputs.appimage_file }}
     #- name: Create package
     #  run: tar -cf previous-RPiOS.tar -C $GITHUB_WORKSPACE/build/dist .
     #
@@ -57,51 +64,47 @@ jobs:
     #    name: previous-RPiOS
     #    path: previous-RPiOS.tar
     #
-    #- name: Publish AppImage
-    #  uses: actions/upload-artifact@v2
+    #- name: Create Release
+    #  id:   create-release
+    #  uses: actions/create-release@v1
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     #  with:
-    #    name: AppImage
-    #    path: ${{ steps.appimage.outputs.appimage_file }}
-
-    - name: Create Release
-      id:   create-release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name:     v${{ needs.setVersion.outputs.SemVer }}
-        release_name: Release ${{ needs.setVersion.outputs.SemVer }}
-        prerelease:   true
-        draft:        true
-
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: ${{ steps.appimage.outputs.appimage_file }}
-        asset_name: ${{ steps.appimage.outputs.appimage_file }}
-        asset_content_type: application/octet-stream
+    #    tag_name:     v${{ needs.setVersion.outputs.SemVer }}
+    #    release_name: Release ${{ needs.setVersion.outputs.SemVer }}
+    #    prerelease:   true
+    #    draft:        true
+    #
+    #- name: Upload Release Asset
+    #  uses: actions/upload-release-asset@v1
+    #  env:
+    #    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #  with:
+    #    upload_url: ${{ steps.create-release.outputs.upload_url }}
+    #    asset_path: ${{ steps.appimage.outputs.appimage_file }}
+    #    asset_name: ${{ steps.appimage.outputs.appimage_file }}
+    #    asset_content_type: application/octet-stream
 
   buildWindows:
     name: Build Windows application
     needs: setVersion
     runs-on: 'windows-latest'
+    env:
+      SEMVER: ${{ needs.setVersion.outputs.SemVer }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
 
-    - name: Locate package list
-      id: package-list
+    - name: Find packages file
+      id: findPackagesFile
       run: |
         echo "::set-output name=PackagesFile::${{ github.workspace }}/vcpkg-packages.x64-windows.txt"
 
     - name: Run vcpkg
       uses: lukka/run-vcpkg@v4
       with:
-        vcpkgGitCommitId: 50a596c40a07afc7588f12f86f276581a60cba94
         vcpkgArguments: '@${{ github.workspace }}/vcpkg-packages.x64-windows.txt'
+        vcpkgGitCommitId: 50a596c40a07afc7588f12f86f276581a60cba94
         appendedCacheKey: ${{ hashFiles('${{ github.workspace }}/vcpkg-packages.x64-windows.txt') }}
     #- run: |
     #    $VCPKG_ROOT/vcpkg install @vcpkg-packages.x64-windows.txt
@@ -126,10 +129,48 @@ jobs:
     - name: Create package
       run: |
         cmake --install ${{ runner.workspace }}/build --prefix ${{ runner.workspace }}/build/dist
-        7z a PreviousEmulator-${{ needs.setVersion.outputs.SemVer }}.x64-windows.zip ${{ runner.workspace }}/build/dist/*
+        7z a PreviousEmulator-${{ env.SEMVER }}.x64-windows.zip ${{ runner.workspace }}/build/dist/*
 
-    - name: Publish package
+    - name: Publish application
       uses: actions/upload-artifact@v2
       with:
-        name: previous-Windows
-        path: PreviousEmulator-${{ needs.setVersion.outputs.SemVer }}.x64-windows.zip
+        name: packages
+        path: 'PreviousEmulator-${{ env.SEMVER }}.x64-windows.zip'
+
+  releasePackages:
+    name: Release packages
+    needs: [ setVersion, buildRPi, buildWindows ]
+    runs-on: 'ubuntu-latest'
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SEMVER: ${{ needs.setVersion.outputs.SemVer }}
+    steps:
+    - name: Download Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: packages
+
+    - name: Create Release
+      id:   createRelease
+      uses: actions/create-release@v1
+      with:
+        tag_name:     v${{ env.SEMVER }}
+        release_name: Release ${{ env.SEMVER }}
+        prerelease:   true
+        draft:        true
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.createRelease.outputs.upload_url }}
+        asset_path: 'PreviousEmulator-${{ env.SEMVER }}-armhf.AppImage'
+        asset_name: 'PreviousEmulator-${{ env.SEMVER }}-armhf.AppImage'
+        asset_content_type: application/octet-stream
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.createRelease.outputs.upload_url }}
+        asset_path: 'PreviousEmulator-${{ env.SEMVER }}.x64-windows.zip'
+        asset_name: 'PreviousEmulator-${{ env.SEMVER }}.x64-windows.zip'
+        asset_content_type: application/zip
