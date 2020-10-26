@@ -134,4 +134,10 @@ else()
 	install(FILES Rev_1.0_v41.BIN DESTINATION ${BINDIR})
 	install(FILES Rev_2.5_v66.BIN DESTINATION ${BINDIR})
 	install(FILES Rev_3.3_v74.BIN DESTINATION ${BINDIR})
+
+	if(WIN32 AND VCPKG_TOOLCHAIN)
+		# This is experimental: https://github.com/Microsoft/vcpkg/issues/1653
+		x_vcpkg_install_local_dependencies(TARGETS Previous DESTINATION ${BINDIR})
+	endif(WIN32 AND VCPKG_TOOLCHAIN)
+
 endif(ENABLE_OSX_BUNDLE)

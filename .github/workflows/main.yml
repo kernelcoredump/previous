@@ -7,9 +7,11 @@ on:
     - master
 
 jobs:
-  build:
-    name: Build RaspberryPi application
-    runs-on: ubuntu-latest
+  setVersion:
+    name: Set version
+    runs-on: 'ubuntu-latest'
+    outputs:
+      SemVer: ${{ steps.gitversion.outputs.SemVer }}
     steps:
     - name: Checkout
       uses: actions/checkout@v2
@@ -24,6 +26,14 @@ jobs:
       uses: gittools/actions/gitversion/execute@v0.9.4
       id:   gitversion
 
+  buildRPi:
+    name: Build RaspberryPi application
+    needs: setVersion
+    runs-on: 'ubuntu-latest'
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
     - name: Build
       uses: docker://ghcr.io/kernelcoredump/previous-builder:latest
       with:
@@ -35,19 +45,19 @@ jobs:
       uses: docker://appimagecrafters/appimage-builder:latest
       id:   appimage
       env:
-        APP_VERSION: ${{ steps.gitversion.outputs.SemVer }}
+        APP_VERSION: ${{ needs.setVersion.outputs.SemVer }}
       with:
         args: /bin/bash -c "appimage-builder --recipe ./AppImageBuilder.armhf.yml --skip-test && echo ::set-output name=appimage_file::$(ls *.AppImage)"
 
-    - name: Create package
-      run: tar -cf previous-RPiOS.tar -C $GITHUB_WORKSPACE/build/dist .
-
-    - name: Publish package
-      uses: actions/upload-artifact@v2
-      with:
-        name: previous-RPiOS
-        path: previous-RPiOS.tar
-
+    #- name: Create package
+    #  run: tar -cf previous-RPiOS.tar -C $GITHUB_WORKSPACE/build/dist .
+    #
+    #- name: Publish package
+    #  uses: actions/upload-artifact@v2
+    #  with:
+    #    name: previous-RPiOS
+    #    path: previous-RPiOS.tar
+    #
     - name: Publish AppImage
       uses: actions/upload-artifact@v2
       with:
@@ -60,8 +70,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name:     v${{ steps.gitversion.outputs.SemVer }}
-        release_name: Release ${{ steps.gitversion.outputs.SemVer }}
+        tag_name:     v${{ needs.setVersion.outputs.SemVer }}
+        release_name: Release ${{ needs.setVersion.outputs.SemVer }}
         prerelease:   true
         draft:        true
 
@@ -74,3 +84,44 @@ jobs:
         asset_path: ${{ steps.appimage.outputs.appimage_file }}
         asset_name: ${{ steps.appimage.outputs.appimage_file }}
         asset_content_type: application/octet-stream
+
+  buildWindows:
+    name: Build Windows application
+    needs: setVersion
+    runs-on: 'windows-latest'
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Run vcpkg
+      uses: lukka/run-vcpkg@v4
+      with:
+        vcpkgArguments: '@vcpkg-packages.x64-windows.txt'
+        appendedCacheKey: ${{ hashFiles(vcpkg-packages.x64-windows.txt) }}
+
+    #- run: |
+    #    $VCPKG_ROOT/vcpkg install @vcpkg-packages.x64-windows.txt
+    #
+    - name: Run CMake
+      uses: lukka/run-cmake@v3
+      with:
+        cmakeGenerator: VS16Win64
+        cmakeListsOrSettingsJson: CMakeListsTxtAdvanced
+        cmakeBuildType: Release
+        cmakeListsTxtPath: '${{ github.workspace }}/CMakeLists.txt'
+        cmakeAppendedArgs: '-DCMAKE_POLICY_DEFAULT_CMP0087=NEW'
+        useVcpkgToolchainFile: true
+        buildDirectory: '${{ runner.workspace }}/build'
+        #buildWithCMake: true
+        #buildWithCMakeArgs: ''
+
+    - name: Create package
+      run: |
+        cmake --install ${{ runner.workspace }}/build --prefix ${{ runner.workspace }}/build/dist
+        7z -a PreviousEmulator-${{ needs.setVersion.outputs.SemVer }}.x64-windows.zip ${{ runner.workspace }}/build/dist/
+
+    - name: Publish package
+      uses: actions/upload-artifact@v2
+      with:
+        name: previous-Windows
+        path: PreviousEmulator-${{ needs.setVersion.outputs.SemVer }}.x64-windows.zip

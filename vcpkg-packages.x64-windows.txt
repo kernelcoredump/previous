@@ -1,0 +1,7 @@
+dirent
+libpng
+zlib
+sdl2
+libpcap
+--triplet
+x64-windows
