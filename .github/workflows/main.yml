@@ -169,9 +169,7 @@ jobs:
   releasePackages:
     name: Release packages
     needs: [ setVersion, buildRPi, buildLinux, buildWindows ]
-    if: |
-      github.ref == 'refs/heads/master'
-      #|| startsWith(github.ref, 'refs/tags/v')
+    if: github.ref == 'refs/heads/master'
     runs-on: 'ubuntu-latest'
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
