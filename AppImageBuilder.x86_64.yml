@@ -1,0 +1,29 @@
+version: 1
+
+AppDir:
+  path: build/dist
+  app_info:
+    id:      org.nextcomputers.previous
+    name:    PreviousEmulator
+    version: !ENV ${APP_VERSION}
+    icon: Previous
+    exec: usr/bin/Previous
+    exec_args: $@
+  apt:
+    arch: amd64
+    sources:
+    - sourceline: 'deb [arch=amd64] http://cdn-fastly.deb.debian.org/debian buster main'
+      key_url:    'https://ftp-master.debian.org/keys/release-10.asc'
+    include:
+    - libpcap0.8
+    - libpng16-16
+    - libsdl2-2.0-0
+  runtime:
+    env:
+      APPDIR_LIBRARY_PATH: $APPDIR/usr/lib/x86_64-linux-gnu:$APPDIR/lib/x86_64-linux-gnu
+      LIBC_LIBRARY_PATH: $APPDIR/opt/libc/usr/lib/x86_64-linux-gnu:$APPDIR/opt/libc/lib/x86_64-linux-gnu
+
+AppImage:
+  update-information: None
+  sign-key: None
+  arch: x86_64
