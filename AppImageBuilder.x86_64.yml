@@ -20,7 +20,7 @@ AppDir:
     - libsdl2-2.0-0
   runtime:
     env:
-      APPDIR_LIBRARY_PATH: $APPDIR/usr/lib/x86_64-linux-gnu:$APPDIR/lib/x86_64-linux-gnu
+      APPDIR_LIBRARY_PATH: $APPDIR/usr/lib/x86_64-linux-gnu:$APPDIR/lib/x86_64-linux-gnu:$APPDIR/usr/lib/x86_64-linux-gnu/pulseaudio
       LIBC_LIBRARY_PATH: $APPDIR/opt/libc/usr/lib/x86_64-linux-gnu:$APPDIR/opt/libc/lib/x86_64-linux-gnu
 
 AppImage:
