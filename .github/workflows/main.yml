@@ -36,14 +36,14 @@ jobs:
       uses: actions/checkout@v2
 
     - name: Build
-      uses: docker://ghcr.io/kernelcoredump/previous-builder:latest
+      uses: docker://ghcr.io/kernelcoredump/previous-builder-armhf:latest
       with:
         # mount $GITHUB_WORKSPACE to /work or just use the mounted /github/workspace
         # workdir is automatically set to /github/workspace
         args: "/crosstools-build.sh"
 
     - name: Build AppImage
-      uses: docker://appimagecrafters/appimage-builder:latest
+      uses: docker://appimagecrafters/appimage-builder:0.8.2
       id:   appimage
       env:
         APP_VERSION: ${{ env.SEMVER }}
@@ -101,7 +101,7 @@ jobs:
         args: "/build.sh"
 
     - name: Build AppImage
-      uses: docker://appimagecrafters/appimage-builder:latest
+      uses: docker://appimagecrafters/appimage-builder:0.8.2
       id:   appimage
       env:
         APP_VERSION: ${{ env.SEMVER }}

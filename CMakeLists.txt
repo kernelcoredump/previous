@@ -12,7 +12,7 @@ include(CheckFunctionExists)
 include(CheckCCompilerFlag)
 include(DistClean)
 
-include_directories(AFTER SYSTEM /usr/include/$ENV{CROSS_TRIPLE} /usr/include/.)
+include_directories(AFTER SYSTEM /usr/include/$ENV{CROSS_TRIPLE} /usr/include/$ENV{MULTIARCH} /usr/include/.)
 
 # Set build type to "Release" if user did not specify any build type yet
 # Other possible values: Debug, Release, RelWithDebInfo and MinSizeRel
@@ -64,6 +64,7 @@ if(READLINE_FOUND)
 	set(CMAKE_REQUIRED_LIBRARIES "")
 endif(READLINE_FOUND)
 
+set(ZLIB_ROOT /usr/lib/$ENV{MULTIARCH}/)
 find_package(ZLIB)
 if(ZLIB_FOUND)
 	set(HAVE_LIBZ 1)

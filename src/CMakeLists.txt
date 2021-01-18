@@ -85,7 +85,7 @@ elseif(WIN32)
 else()
 	add_executable(Previous ${SOURCES})
 	set_target_properties(Previous PROPERTIES
-		LINK_FLAGS "-L/usr/lib/$ENV{CROSS_TRIPLE} -Wl,-rpath-link,/usr/lib/$ENV{CROSS_TRIPLE} -Wl,-rpath-link,/usr/lib/$ENV{CROSS_TRIPLE}/pulseaudio -Wl,-rpath-link,/lib/$ENV{CROSS_TRIPLE}"
+		LINK_FLAGS "-L/usr/lib/$ENV{MULTIARCH} -Wl,-rpath-link,/usr/lib/$ENV{MULTIARCH} -Wl,-rpath-link,/usr/lib/$ENV{MULTIARCH}/pulseaudio -Wl,-rpath-link,/lib/$ENV{MULTIARCH}"
 	)
 endif(ENABLE_OSX_BUNDLE)
 

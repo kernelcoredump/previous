@@ -13,7 +13,7 @@ AppDir:
     arch: amd64
     sources:
     - sourceline: 'deb [arch=amd64] http://cdn-fastly.deb.debian.org/debian buster main'
-      key_url:    'https://ftp-master.debian.org/keys/release-10.asc'
+      key_url:    'https://ftp-master.debian.org/keys/archive-key-10.asc'
     include:
     - libpcap0.8
     - libpng16-16
