@@ -17,12 +17,11 @@ jobs:
         # check performance of increases in the commit depth
         fetch-depth: 0
     - name: Install GitVersion
-      uses: gittools/actions/gitversion/setup@v0.9.4
+      uses: gittools/actions/gitversion/setup@v0.9.8
       with:
-        versionSpec: 5.3.x
-    # TODO: https://github.com/GitTools/GitVersion/issues/2421
+        versionSpec: 5.5.x
     - name: Use GitVersion
-      uses: gittools/actions/gitversion/execute@v0.9.4
+      uses: gittools/actions/gitversion/execute@v0.9.8
       id:   gitversion
 
   buildRPi:
