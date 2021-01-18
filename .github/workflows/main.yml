@@ -84,6 +84,37 @@ jobs:
     #    asset_name: ${{ steps.appimage.outputs.appimage_file }}
     #    asset_content_type: application/octet-stream
 
+  buildRPi64:
+    name: Build RaspberryPi 64-bit application
+    needs: setVersion
+    runs-on: 'ubuntu-latest'
+    env:
+      SEMVER: ${{ needs.setVersion.outputs.SemVer }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Build
+      uses: docker://ghcr.io/kernelcoredump/previous-builder-arm64:latest
+      with:
+        # mount $GITHUB_WORKSPACE to /work or just use the mounted /github/workspace
+        # workdir is automatically set to /github/workspace
+        args: "/crosstools-build.sh"
+
+    - name: Build AppImage
+      uses: docker://appimagecrafters/appimage-builder:0.8.2
+      id:   appimage
+      env:
+        APP_VERSION: ${{ env.SEMVER }}
+      with:
+        args: /bin/bash -c "appimage-builder --recipe ./AppImageBuilder.aarch64.yml --skip-test && echo ::set-output name=appimage_file::$(ls *.AppImage)"
+
+    - name: Publish AppImage
+      uses: actions/upload-artifact@v2
+      with:
+        name: packages
+        path: ${{ steps.appimage.outputs.appimage_file }}
+
   buildLinux:
     name: Build Linux x86_64 application
     needs: setVersion
@@ -167,7 +198,7 @@ jobs:
 
   releasePackages:
     name: Release packages
-    needs: [ setVersion, buildRPi, buildLinux, buildWindows ]
+    needs: [ setVersion, buildRPi, buildRPi64, buildLinux, buildWindows ]
     if: github.ref == 'refs/heads/master'
     runs-on: 'ubuntu-latest'
     env:
@@ -194,6 +225,14 @@ jobs:
         upload_url: ${{ steps.createRelease.outputs.upload_url }}
         asset_path: 'PreviousEmulator-${{ env.SEMVER }}-armhf.AppImage'
         asset_name: 'PreviousEmulator-${{ env.SEMVER }}-armhf.AppImage'
+        asset_content_type: application/octet-stream
+
+    - name: Upload Release Asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.createRelease.outputs.upload_url }}
+        asset_path: 'PreviousEmulator-${{ env.SEMVER }}-aarch64.AppImage'
+        asset_name: 'PreviousEmulator-${{ env.SEMVER }}-aarch64.AppImage'
         asset_content_type: application/octet-stream
 
     - name: Upload Release Asset
